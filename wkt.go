@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var FuzzWKT = [...]interface{}{FuzzAny, FuzzDuration, FuzzStruct, FuzzTimestamp}
+var FuzzWKT = [...]interface{}{FuzzAny, FuzzDuration, FuzzStruct, FuzzTimestamp, FuzzFieldMask}
 
 // FuzzAny can be used to Fuzz google.protobuf.Any messages.
 // It fills a fuzzed google.protobuf.Struct message.
