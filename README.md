@@ -1,9 +1,14 @@
 # goprotofuzz
 
-goprotofuzz is a protoc plugin used to generate fuzzing functions suitable for use with [gofuzz](https://github.com/google/gofuzz).
-Get it using `go get github.com/srikrsna/goprotofuzz `
+goprotofuzz is a protoc plugin used to generate fuzzing functions suitable for use with [gofuzz](https://github.com/google/gofuzz). 
 
 ## Usage
+
+Install the plugin,
+
+```bash
+go install github.com/srikrsna/goprotofuzz/cmd/protoc-gen-gofuzz@latest
+```
 
 For a protobuf definition like this,
 
@@ -37,6 +42,8 @@ protoc -I . --fuzz_out=:. example/example.proto
 ```
 
 and can be used in testing as follow,
+
+`go get github.com/srikrsna/goprotofuzz`
 
 ```go
 package pb_test
