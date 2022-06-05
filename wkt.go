@@ -6,6 +6,7 @@ import (
 	fuzz "github.com/google/gofuzz"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -51,4 +52,34 @@ func FuzzTimestamp(msg *timestamppb.Timestamp, c fuzz.Continue) {
 // It's range is [0, 1 year)
 func FuzzDuration(msg *durationpb.Duration, c fuzz.Continue) {
 	msg.Seconds = c.Int63n(365 * 24 * 60 * 60)
+}
+
+var (
+	fieldNameFuzzFn = fuzz.UnicodeRanges{
+		{
+			First: rune('A'),
+			Last:  rune('Z'),
+		},
+		{
+			First: rune('a'),
+			Last:  rune('z'),
+		},
+		{
+			First: rune('_'),
+			Last:  rune('_'),
+		},
+		{
+			First: rune('0'),
+			Last:  rune('9'),
+		},
+	}.CustomStringFuzzFunc()
+)
+
+// FuzzFieldMask can be used to Fuzz google.protobuf.FieldMask messages.
+// They produce valid lower_snake_case paths
+func FuzzFieldMask(msg *fieldmaskpb.FieldMask, c fuzz.Continue) {
+	c.Fuzz(&msg.Paths)
+	for i := range msg.Paths {
+		fieldNameFuzzFn(&msg.Paths[i], c)
+	}
 }
