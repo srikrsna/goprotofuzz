@@ -1,0 +1,12 @@
+version: v1
+managed: 
+  enabled: true
+  go_package_prefix:
+    default: "github.com/srikrsna/goprotofuzz/internal/gen"
+plugins:
+  - name: go
+    out: internal/gen
+    opt: paths=source_relative
+  - name: gofuzz
+    out: internal/gen
+    opt: paths=source_relative
