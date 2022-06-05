@@ -1,6 +1,7 @@
 package goprotofuzz
 
 import (
+	"strings"
 	"time"
 
 	fuzz "github.com/google/gofuzz"
@@ -73,5 +74,6 @@ func FuzzFieldMask(msg *fieldmaskpb.FieldMask, c fuzz.Continue) {
 	c.Fuzz(&msg.Paths)
 	for i := range msg.Paths {
 		fieldNameFuzzFn(&msg.Paths[i], c)
+		msg.Paths[i] = strings.Trim(msg.Paths[i], "_")
 	}
 }
