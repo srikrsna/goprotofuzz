@@ -57,20 +57,12 @@ func FuzzDuration(msg *durationpb.Duration, c fuzz.Continue) {
 var (
 	fieldNameFuzzFn = fuzz.UnicodeRanges{
 		{
-			First: rune('A'),
-			Last:  rune('Z'),
-		},
-		{
 			First: rune('a'),
 			Last:  rune('z'),
 		},
 		{
 			First: rune('_'),
 			Last:  rune('_'),
-		},
-		{
-			First: rune('0'),
-			Last:  rune('9'),
 		},
 	}.CustomStringFuzzFunc()
 )
