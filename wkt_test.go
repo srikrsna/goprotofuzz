@@ -10,6 +10,7 @@ import (
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -59,4 +60,23 @@ func TestFuzzDuration(t *testing.T) {
 	if err := exp.CheckValid(); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestFuzzFieldMask(t *testing.T) {
+	fz := fuzz.New().Funcs(wkt.FuzzFieldMask)
+	var exp fieldmaskpb.FieldMask
+	fz.Fuzz(&exp)
+}
+
+func FuzzFieldMask(f *testing.F) {
+	f.Fuzz(func(t *testing.T, data []byte) {
+		fz := fuzz.NewFromGoFuzz(data).Funcs(wkt.FuzzFieldMask)
+		var exp fieldmaskpb.FieldMask
+		fz.Fuzz(&exp)
+		for _, path := range exp.Paths {
+			if path == "" {
+				t.Error("empty path")
+			}
+		}
+	})
 }

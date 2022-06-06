@@ -61,10 +61,6 @@ var (
 			First: rune('a'),
 			Last:  rune('z'),
 		},
-		{
-			First: rune('_'),
-			Last:  rune('_'),
-		},
 	}.CustomStringFuzzFunc()
 )
 
@@ -73,7 +69,18 @@ var (
 func FuzzFieldMask(msg *fieldmaskpb.FieldMask, c fuzz.Continue) {
 	c.Fuzz(&msg.Paths)
 	for i := range msg.Paths {
-		fieldNameFuzzFn(&msg.Paths[i], c)
-		msg.Paths[i] = strings.Trim(msg.Paths[i], "_")
+		words := make([]string, 1+c.Intn(2))
+		switch len(words) {
+		case 2:
+			for words[1] == "" {
+				fieldNameFuzzFn(&words[1], c)
+			}
+			fallthrough
+		case 1:
+			for words[0] == "" {
+				fieldNameFuzzFn(&words[0], c)
+			}
+		}
+		msg.Paths[i] = strings.Join(words, "_")
 	}
 }
