@@ -44,6 +44,15 @@ func TestFuzzStruct(t *testing.T) {
 	}
 }
 
+func TestFuzzValue(t *testing.T) {
+	fz := fuzz.New().Funcs(wkt.FuzzValue, wkt.FuzzStruct)
+	var exp structpb.Value
+	fz.Fuzz(&exp)
+	if !exp.ProtoReflect().IsValid() {
+		t.Fatal("Invalid")
+	}
+}
+
 func TestFuzzTimestamp(t *testing.T) {
 	fz := fuzz.New().Funcs(wkt.FuzzTimestamp)
 	var exp timestamppb.Timestamp

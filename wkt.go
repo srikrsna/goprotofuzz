@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var FuzzWKT = [...]interface{}{FuzzAny, FuzzDuration, FuzzStruct, FuzzTimestamp, FuzzFieldMask}
+var FuzzWKT = [...]interface{}{FuzzAny, FuzzDuration, FuzzStruct, FuzzTimestamp, FuzzFieldMask, FuzzValue}
 
 // FuzzAny can be used to Fuzz google.protobuf.Any messages.
 // It fills a fuzzed google.protobuf.Struct message.
@@ -38,6 +38,25 @@ func FuzzStruct(msg *structpb.Struct, c fuzz.Continue) {
 			v = structpb.NewStringValue(c.RandString())
 		}
 		msg.Fields[c.RandString()] = v
+	}
+}
+
+// FuzzStruct can be used to Fuzz google.protobuf.Value messages.
+// Values can be null, string, number, bool or struct
+func FuzzValue(msg *structpb.Value, c fuzz.Continue) {
+	switch c.Int() % 5 {
+	case 0:
+		msg.Kind = structpb.NewNullValue().Kind
+	case 1:
+		msg.Kind = structpb.NewStringValue(c.RandString()).Kind
+	case 2:
+		msg.Kind = structpb.NewBoolValue(c.RandBool()).Kind
+	case 3:
+		msg.Kind = structpb.NewNumberValue(c.NormFloat64()).Kind
+	case 4:
+		var structValue structpb.Struct
+		c.Fuzz(&structValue)
+		msg.Kind = structpb.NewStructValue(&structValue).Kind
 	}
 }
 
